@@ -2,11 +2,12 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Yaşar Üniversitesi Web Servis</title>
+<title>TcDogrula</title>
 </head>
 
 <body>
 <?php
+//strtoupper fonksiyonu türkçe karakterleri büyük harf yapmaz onun için bu fonksiyonla düzeltiyoruz.
 function karakter_duzeltme($gelen){
     $karakterler = array("ç","ğ","ı","i","ö","ş","ü");
     $degistir = array("Ç","Ğ","I","İ","Ö","Ş","Ü");
@@ -18,8 +19,16 @@ $service = new SoapClient("https://tckimlik.nvi.gov.tr/Service/KPSPublic.asmx?ws
 $result = $service->TCKimlikNoDogrula(array("TCKimlikNo"=>trim($trID),"Ad"=>strtoupper(karakter_duzeltme(trim($firstName))),"Soyad"=>strtoupper(karakter_duzeltme(trim($lastName))),"DogumYili"=>trim($birthYear)));
 //print_r($result);
 if($result->TCKimlikNoDogrulaResult!=""){
-if($result->TCKimlikNoDogrulaResult==1){return true;}
-}else{return false;}
+if($result->TCKimlikNoDogrulaResult==1){
+	/doğru yanlış veya array olarak değer döndürebilirsiniz.
+	//return true;
+	return $result;
+}
+}else{
+	//doğru yanlış veya array olarak değer döndürebilirsiniz.
+	//return false;
+	return $result;
+}
 	}catch (Exception $hata){
        return false;
     }
@@ -29,8 +38,8 @@ if(isset($_POST['gonder'])){
 	echo $ad=$_POST['ad'];
 	echo $soyad=$_POST['soyad'];
 	echo $yil=$_POST['yil'];
-    $x=tcDogrula($tc,$ad,$soyad,$yil);
-print_r($x);
+    $status=tcDogrula($tc,$ad,$soyad,$yil);
+print_r($status);
 	}
 ?>
 <form action="" method="post">
